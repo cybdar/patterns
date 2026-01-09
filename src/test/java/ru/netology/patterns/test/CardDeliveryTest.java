@@ -21,6 +21,7 @@ public class CardDeliveryTest {
     static void setupAll() {
         Configuration.timeout = 15000;
         Configuration.browserSize = "1280x800";
+        Configuration.headless = true;
     }
 
     @BeforeEach

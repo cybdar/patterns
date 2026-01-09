@@ -20,27 +20,38 @@ jobs:
         with:
           chrome-version: 'stable'
 
-      - name: Remove old ChromeDriver
-        run: |
-          sudo rm -f /usr/bin/chromedriver
-          echo "Old ChromeDriver removed"
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Start application
+      - name: Start application with verbose logging
         run: |
-          nohup java -jar artifacts/app-replan-delivery.jar &
-          sleep 5
+          echo "Starting application..."
+          java -jar artifacts/app-replan-delivery.jar &
+          APP_PID=$!
+          echo "Application PID: $APP_PID"
+          
+          sleep 10
+          
+          if ps -p $APP_PID > /dev/null; then
+            echo "Application process is running"
+          else
+            echo "ERROR: Application process died"
+            exit 1
+          fi
+          
+          if netstat -tuln | grep :9999 > /dev/null; then
+            echo "SUCCESS: Application is listening on port 9999"
+            curl -s http://localhost:9999 || echo "Curl check completed"
+          else
+            echo "ERROR: Application is NOT listening on port 9999"
+            netstat -tuln
+            exit 1
+          fi
 
       - name: Build with Gradle
         run: ./gradlew test --info
 
       - name: Stop application
-        run: pkill -f "app-replan-delivery.jar"
-
-      - name: Build with Gradle
-        run: ./gradlew test --info
-
-      - name: Stop application
-        run: pkill -f "app-replan-delivery.jar"
+        run: |
+          pkill -f "app-replan-delivery.jar" || true
+          echo "Application stopped"
