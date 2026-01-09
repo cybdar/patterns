@@ -20,6 +20,11 @@ jobs:
         with:
           chrome-version: 'stable'
 
+      - name: Remove old ChromeDriver
+        run: |
+          sudo rm -f /usr/bin/chromedriver
+          echo "Old ChromeDriver removed"
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
@@ -27,6 +32,12 @@ jobs:
         run: |
           nohup java -jar artifacts/app-replan-delivery.jar &
           sleep 5
+
+      - name: Build with Gradle
+        run: ./gradlew test --info
+
+      - name: Stop application
+        run: pkill -f "app-replan-delivery.jar"
 
       - name: Build with Gradle
         run: ./gradlew test --info
