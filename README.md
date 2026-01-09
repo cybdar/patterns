@@ -2,9 +2,8 @@
 
 [![Java CI](https://github.com/cybdar/patterns/actions/workflows/build.yml/badge.svg)](https://github.com/cybdar/patterns/actions/workflows/build.yml)
 
-## Задача: Заказ доставки карты (изменение даты)
+Время: ручное 60 мин, авто 90 мин.
 
-## Запуск
 ```bash
 java -jar artifacts/app-replan-delivery.jar
 ./gradlew test
