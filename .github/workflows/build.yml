@@ -1,4 +1,4 @@
-name: Java CI
+name: Java CI with Gradle
 
 on: [push, pull_request]
 
@@ -7,51 +7,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
+      - uses: actions/checkout@v2
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v2
         with:
           java-version: '11'
-          distribution: 'temurin'
-
-      - name: Set up Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: 'stable'
-
+          distribution: 'adopt'
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-
-      - name: Start application with verbose logging
+      - name: Start SUT
         run: |
-          echo "Starting application..."
-          java -jar artifacts/app-replan-delivery.jar &
-          APP_PID=$!
-          echo "Application PID: $APP_PID"
-          
+          java -jar ./artifacts/app-replan-delivery.jar &
           sleep 10
-          
-          if ps -p $APP_PID > /dev/null; then
-            echo "Application process is running"
-          else
-            echo "ERROR: Application process died"
-            exit 1
-          fi
-          
-          if netstat -tuln | grep :9999 > /dev/null; then
-            echo "SUCCESS: Application is listening on port 9999"
-            curl -s http://localhost:9999 || echo "Curl check completed"
-          else
-            echo "ERROR: Application is NOT listening on port 9999"
-            netstat -tuln
-            exit 1
-          fi
-
       - name: Build with Gradle
-        run: ./gradlew test --info
-
-      - name: Stop application
+        run: ./gradlew test --info -Dselenide.headless=true
+      - name: Stop SUT
         run: |
           pkill -f "app-replan-delivery.jar" || true
-          echo "Application stopped"

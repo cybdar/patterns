@@ -1,9 +1,7 @@
 package ru.netology.patterns.test;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selectors;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,13 +14,6 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class CardDeliveryTest {
-
-    @BeforeAll
-    static void setupAll() {
-        Configuration.timeout = 15000;
-        Configuration.browserSize = "1280x800";
-        Configuration.headless = true;
-    }
 
     @BeforeEach
     void setup() {
