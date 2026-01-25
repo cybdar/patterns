@@ -18,9 +18,5 @@ jobs:
       - name: Start SUT
         run: |
           java -jar ./artifacts/app-replan-delivery.jar &
-          sleep 10
       - name: Build with Gradle
         run: ./gradlew test --info -Dselenide.headless=true
-      - name: Stop SUT
-        run: |
-          pkill -f "app-replan-delivery.jar" || true
